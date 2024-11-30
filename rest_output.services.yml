@@ -1,0 +1,9 @@
+services:
+  rest_output.service:
+    class: Drupal\rest_output\HelperService
+    arguments: []
+  api.rest_response_filter:
+    class: Drupal\rest_output\EventSubscriber\RestResponseFilterSubscriber
+    arguments: []
+    tags:
+      - { name: event_subscriber }

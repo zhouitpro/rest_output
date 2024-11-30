@@ -1,0 +1,4 @@
+name: 'Rest output'
+type: module
+description: 'Rest output'
+core_version_requirement: ^8 | ^9 | ^10
