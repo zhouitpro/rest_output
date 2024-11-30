@@ -2,6 +2,7 @@
 
 namespace Drupal\rest_output\EventSubscriber;
 
+use Drupal\Core\Http\Exception\CacheableAccessDeniedHttpException;
 use Drupal\rest_output\ApiHelper;
 use Drupal\rest_output\ApiResponse\Successful;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -22,7 +23,7 @@ class RestResponseFilterSubscriber implements EventSubscriberInterface {
     if ($this->isRestPage() || $this->isJsonApi()) {
       $res = json_decode($event->getResponse()->getContent(), 1);
       if (!$this->exception && (!isset($res['success']) || !isset($res['errorCode']) || (!isset($res['message'])))) {
-        return $event->setResponse($this->jsonResponse(new Successful(), NULL, $res));
+        return $event->setResponse($this->apiSuccess($res));
       }
     }
   }
@@ -31,21 +32,11 @@ class RestResponseFilterSubscriber implements EventSubscriberInterface {
     if ($this->isRestPage() || $this->isJsonApi()){
       $exception = $event->getThrowable();
       $this->exception = true;
-      if (!method_exists($exception, 'getCode')) {
-        $res = $this->apiServerError();
+
+      if ($exception instanceof CacheableAccessDeniedHttpException) {
+        $res = $this->apiUnauthorized();
       } else {
-        switch ($exception->getCode()) {
-          case 403:
-            $res = $this->apiUnauthorized();
-            break;
-          case 404:
-            $res = $this->apiDataNotFound();
-            break;
-          case 500:
-          default:
-            $res = $this->apiServerError();
-            break;
-        }
+        $res = $this->apiServerError();
       }
 
       return $event->setResponse($res);

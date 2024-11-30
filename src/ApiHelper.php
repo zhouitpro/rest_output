@@ -109,8 +109,8 @@ trait ApiHelper {
    *
    * @return ResourceResponse
    */
-  public function apiUnauthorized(): ResourceResponse  {
-    return $this->responseData(new Unauthorized(), NULL, [
+  public function apiUnauthorized($msg = NULL): Response  {
+    return $this->responseData(new Unauthorized(), $msg, [
       'user_is_login' => (!\Drupal::currentUser()->isAnonymous())
     ]);
   }
@@ -120,7 +120,7 @@ trait ApiHelper {
    *
    * @return ResourceResponse
    */
-  public function apiClientError(): ResourceResponse {
+  public function apiClientError(): Response {
     return $this->responseData(new ClientError());
   }
 

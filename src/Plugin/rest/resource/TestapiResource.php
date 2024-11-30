@@ -6,7 +6,9 @@ namespace Drupal\rest_output\Plugin\rest\resource;
 
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest_output\ApiHelper;
+use Drupal\rest_output\Responder\JsonResponder;
 use Drupal\rest_output\Responder\ResourceResponder;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Represents TestApi records as resources.
@@ -34,6 +36,8 @@ final class TestapiResource extends ResourceBase {
       'userid' => 1,
       'username' => 'xiukunabcd'
     ];
+    \Drupal::entityTypeManager()->getStorage('abcd');
+    return new JsonResponse($data);
 
     $response = $this->apiSuccess($data);
     $response->send();
