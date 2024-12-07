@@ -7,3 +7,7 @@ services:
     arguments: []
     tags:
       - { name: event_subscriber }
+  rest_output.encoder.csv:
+    class: Drupal\rest_output\Encoder\CsvEncoder
+    tags:
+      - { name: encoder, format: csv }

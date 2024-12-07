@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\rest_output\Plugin\rest\resource;
 
 use Drupal\rest\Plugin\ResourceBase;
+use Drupal\rest\ResourceResponse;
 use Drupal\rest_output\ApiHelper;
 use Drupal\rest_output\Responder\JsonResponder;
 use Drupal\rest_output\Responder\ResourceResponder;
@@ -37,7 +38,7 @@ final class TestapiResource extends ResourceBase {
       'username' => 'xiukunabcd'
     ];
     \Drupal::entityTypeManager()->getStorage('abcd');
-    return new JsonResponse($data);
+    return new ResourceResponse($data);
 
     $response = $this->apiSuccess($data);
     $response->send();

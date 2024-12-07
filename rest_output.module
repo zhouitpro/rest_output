@@ -1,1 +1,5 @@
 <?php
+
+function node_load($id) {
+  return \Drupal\node\Entity\Node::load($id);
+}

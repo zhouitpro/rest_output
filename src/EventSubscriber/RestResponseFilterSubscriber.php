@@ -4,7 +4,7 @@ namespace Drupal\rest_output\EventSubscriber;
 
 use Drupal\Core\Http\Exception\CacheableAccessDeniedHttpException;
 use Drupal\rest_output\ApiHelper;
-use Drupal\rest_output\ApiResponse\Successful;
+use Drupal\rest_output\Responder\SerializeResponder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -21,7 +21,12 @@ class RestResponseFilterSubscriber implements EventSubscriberInterface {
 
   public function onRespose(ResponseEvent $event) {
     if ($this->isRestPage() || $this->isJsonApi()) {
-      $res = json_decode($event->getResponse()->getContent(), 1);
+      $format = $_GET['_format'] ?? 'json';
+
+      // parse response.
+      $res = \Drupal::service('serializer')
+        ->deserialize($event->getResponse()->getContent(), 'array', $format);
+
       if (!$this->exception && (!isset($res['success']) || !isset($res['errorCode']) || (!isset($res['message'])))) {
         return $event->setResponse($this->apiSuccess($res));
       }

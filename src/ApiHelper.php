@@ -11,6 +11,7 @@ use Drupal\rest_output\ApiResponse\Unauthorized;
 use Drupal\rest\ResourceResponse;
 use Drupal\rest_output\Responder\ApiResponderInterface;
 use Drupal\rest_output\Responder\JsonResponder;
+use Drupal\rest_output\Responder\SerializeResponder;
 use Symfony\Component\HttpFoundation\Response;
 
 trait ApiHelper {
@@ -132,7 +133,11 @@ trait ApiHelper {
    */
   public function responseData(ApiResponseInterface $apiResponse, $msg = NULL, $data = []) {
     if (!$this->getResponder()) {
-      $this->setResponder(new JsonResponder());
+      if (isset($_GET['_format'])) {
+        $this->setResponder(new SerializeResponder($_GET['_format']));
+      } else {
+        $this->setResponder(new JsonResponder());
+      }
     }
 
     return $this->getResponder()->getResponse($apiResponse, $msg, $data);
